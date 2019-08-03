@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Show Contracts</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- <link rel="stylesheet" href="../styles/main.css"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/modalPopup.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+    <!-- MAIN LIST OF CONTRACTS -->
+    <div class="container">
+        <div th:if="${not #lists.isEmpty(contracts)}">                    
+        <h1>Contract List</h1>
+            <table class="table">
+                <thead>
+                    <td>ID</td>
+                    <td>ORIGIN</td>
+                    <td>DESTINATION</td>
+                    <td>AGENT NAME</td>
+                    <td>COMMODITY</td>
+                    <td>WEIGHT BREAK</td>
+                    <td>CURRENCY</td>
+                    <td>VALUE</td>
+                    <td>VALID FROM</td>
+                    <td>VALID TO</td>
+                </thead>
+
+                <form id="contractRowForm" th:action="@{/contracts/edit}" th:object="${contract}" method="post">
+                <tr th:id="'contractRow' + ${contract.id}" th:each="contract : ${contracts}">
+                    <td th:id="id" th:text="${contract.id}"></td>
+                    <td th:id="org" th:text="${contract.origin}"></td>
+                    <td th:id="des" th:text="${contract.destination}"></td>
+                    <td th:id="agt" th:text="${contract.agentName}"></td>
+                    <td th:id="comm" th:text="${contract.commodity}"></td>
+                    <td th:id="wb" th:text="${contract.weightBreak}"></td>
+                    <td th:id="curr" th:text="${contract.currency}"></td>
+                    <td th:id="value" th:text="${contract.value}"></td>
+                    <td th:id="from" th:text="${contract.validFrom}"></td>
+                    <td th:id="to" th:text="${contract.validTo}"></td>
+
+                    <td class="buttons">
+                            <!-- th:href="${'/contracts/edit/' + contract.id}" -->
+                        <a class="btn btn-default" th:id="'editOrSaveBtn' + ${contract.id}"
+                            th:onclick="'javascript:editOrSaveHandler(' + ${contract.id} + ');'">Edit</a>
+                        <a class="btn btn-default" th:href="${'/contracts/delete/' + contract.id}">Delete</a>
+                    </td>
+                </tr>
+                </form>
+                <!-- Trigger/Open The Modal -->
+                <a id="addContractBtn" class="btn btn-default">Add New Contract</a>
+                <!-- <a class="btn btn-default" th:href="${'/contracts/addMultiple'}">Add Multiple</a> -->
+
+            </table>
+        </div>        
+    </div>
+
+    <div>
+        <!-- The Modal Popup -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal form content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <table class="table">
+                    <thead>
+                        Specify the details of new contract
+                    </thead>
+                    <tr>
+                        <form id="submitForm" th:action="@{/contracts/add}" th:object="${contract}" method="post">
+                            <p>
+                                <input type="text" class="short" placeholder="Origin" th:field="*{origin}"  />
+                                <input type="text" class="short" placeholder="Destination" th:field="*{destination}"/>
+                                <input type="text" class="long" placeholder="Agent Name" th:field="*{agentName}"/>
+                                <input type="text" class="long" placeholder="Commodity" th:field="*{commodity}"/>
+                                <input type="text" class="short" placeholder="WB" th:field="*{weightBreak}"/>
+                                <input type="text" class="short" placeholder="Currency" th:field="*{currency}"/>
+                                <input type="text" class="short" placeholder="Value" th:field="*{value}"/>
+                                <input type="text" class="long" placeholder="Valid From (YYYY-MM-DD)" th:field="*{validFrom}"/>
+                                <input type="text" class="long" placeholder="Valid To (YYYY-MM-DD)" th:field="*{validTo}"/>
+                            </p>
+                            <p>
+                                <input type="submit" id="btn-submit" value="Submit"/>
+                                <input type="reset" id="btn-reset" value="Reset"/>
+                            </p>
+                        </form>
+                        <!-- <td class="modalButtons">
+                            th:href="${'/contracts/edit/' + contract.id}"
+                            <a class="btn btn-default">Delete</a>
+                        </td> -->
+                    </tr>
+                </table>
+            </form>
+                <!-- <a class="btn btn-default" th:href="${'/contracts/add'}">Submit</a> -->
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // id stands for CONTRACT ID
+        function editOrSaveHandler(id) {
+            var tableRow = document.getElementById('contractRow' + id);
+            //alert(tableRow.cells.namedItem("id").innerHTML);// reach a td in a tr (WORKS)
+
+            // make editable the fields of contract row
+            for(cell of tableRow.cells) {
+                if(cell.className != "buttons" && cell.id != "id") {
+                    cell.removeAttribute("disabled");
+                    cell.setAttribute("contenteditable","true");
+                }
+            }
+
+            // color the row with yellow if Edit button clicked
+            tableRow.removeAttribute("bgcolor");
+            tableRow.setAttribute("bgcolor","yellow");
+
+            // BEGIN -- change Edit Button text on click -- BEGIN
+            var editOrSaveBtn = document.getElementById("editOrSaveBtn" + id);
+            if(editOrSaveBtn.innerText == 'Edit') {
+                editOrSaveBtn.innerText = 'Save';
+            } else {
+
+                editOrSaveBtn.innerText = 'Edit';
+            }
+            // END -- change Edit Button on click -- END
+
+            //alert(editButton.id + ' is disabled: ' + editButton.disabled);
+        }
+    </script>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("addContractBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on the button, open the modal 
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
