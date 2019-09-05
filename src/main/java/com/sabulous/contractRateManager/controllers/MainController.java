@@ -6,13 +6,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MainController {
 
-    @GetMapping(value={"/", "/home"})
-    public String getHomePage() {
-        return "contracts";
+    @GetMapping(value={"/", "/hello"})
+    public String getContractsPage() {
+        return "hello";
     }
 
     @GetMapping(value={"/login"})
     public String getLoginPage() {
+        System.out.println("loginpage GET request");
         return "login";
     }
+
 }

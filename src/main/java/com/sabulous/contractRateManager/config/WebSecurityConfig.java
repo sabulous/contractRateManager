@@ -1,7 +1,9 @@
 package com.sabulous.contractRateManager.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -13,28 +15,25 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-        .csrf().disable()
-        .authorizeRequests()
-        // .antMatchers("/admin/**").hasRole("ADMIN")
-        // .antMatchers("/anonymous*").anonymous()
-        .antMatchers("/login*").permitAll()
-        .anyRequest().authenticated()
-        .and()
-        .formLogin()
-        .loginPage("/login")
-        // .loginProcessingUrl("/perform_login")
-        .defaultSuccessUrl("/contracts", true)
-        //.failureUrl("/login.html?error=true")
-        // .failureHandler(authenticationFailureHandler())
-        .and()
-        .logout()
-        // .logoutUrl("/perform_logout")
-        .deleteCookies("JSESSIONID")
-        // .logoutSuccessHandler(logoutSuccessHandler())
-        ;
+            .authorizeRequests()
+                .antMatchers("/", "/hello").permitAll()
+                    // DO NOT allow anything else
+                    // any request besides above line (ones in the antMatchers) require authentication
+                    .anyRequest().authenticated()
+                .and()
+                    .formLogin()
+                    .loginPage("/login")
+                    .permitAll()
+                .and()
+                    .logout()
+                    .permitAll();
+
+        // Disable CSRF (cross site request forgery)
+        http.csrf().disable();
     }
 
     @Bean
@@ -42,11 +41,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         UserDetails user =
              User.withDefaultPasswordEncoder()
-                .username("sab")
-                .password("sabulous")
+                .username("user")
+                .password("password")
                 .roles("USER")
                 .build();
 
         return new InMemoryUserDetailsManager(user);
     }
+
 }

@@ -1,6 +1,7 @@
 package com.sabulous.contractRateManager;
 
-import com.sabulous.contractRateManager.services.ContractServiceImpl;
+import com.sabulous.contractRateManager.services.ContractService;
+import com.sabulous.contractRateManager.services.EmailService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,8 +16,11 @@ public class ContractRateManagerApplication {
 		ApplicationContext ctx = SpringApplication.run(ContractRateManagerApplication.class, args);
 		System.out.println("hey");
 		
-		ContractServiceImpl contractService = (ContractServiceImpl)ctx.getBean(ContractServiceImpl.class);
+		ContractService contractService = (ContractService)ctx.getBean(ContractService.class);
 		contractService.printContracts();
+
+		EmailService emailService = (EmailService)ctx.getBean(EmailService.class);
+		emailService.sendNotification("","","");
 	}
 
 }

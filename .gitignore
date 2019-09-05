@@ -29,3 +29,5 @@ build/
 
 ### VS Code ###
 .vscode/
+src/main/java/com/sabulous/contractRateManager/config/MvcConfig.java
+src/main/java/com/sabulous/contractRateManager/config/CustomUrlAuthenticationSuccessHandler.java
