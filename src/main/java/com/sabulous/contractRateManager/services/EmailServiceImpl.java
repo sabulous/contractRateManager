@@ -46,14 +46,13 @@ public class EmailServiceImpl implements EmailService {
                 }
             };
 
-            
             Session session = Session.getInstance(props, auth);
             MimeMessage msg = new MimeMessage(session);
-            msg.setText("Hey, this is the testing email.\nAbi napion?\nSabri");
+            msg.setText("Hey, this is the testing email.");
             msg.setSubject("Spring Notification TEST");
             msg.setFrom(new InternetAddress(Credentials.email));
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress("s.sahin@thy.com"));
-            Transport.send(msg);
+            //Transport.send(msg);
 
         } catch (MessagingException mex) {
              mex.printStackTrace();

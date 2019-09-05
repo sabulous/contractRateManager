@@ -25,6 +25,7 @@
                     <td>VALUE</td>
                     <td>VALID FROM</td>
                     <td>VALID TO</td>
+                    <td>STATUS</td>
                 </thead>
                 <tr th:each="contract : ${contracts}">
                     <td th:text="${contract.id}"></td>
@@ -37,6 +38,7 @@
                     <td th:text="${contract.value}"></td>
                     <td th:text="${contract.validFrom}"></td>
                     <td th:text="${contract.validTo}"></td>
+                    <td th:text="${contract.status}"></td>
                     <td>
                         <a class="btn btn-default" th:href="${'/contracts/edit/' + contract.id}">Edit</a>
                         <a class="btn btn-default" th:href="${'/contracts/delete/' + contract.id}">Delete</a>

@@ -18,7 +18,7 @@ public class ContractServiceImpl implements ContractService {
 
     private final String CONTRACTS_TABLE = "CONTRACT";
     private final String TABLE_FIELDS = "(ORIGIN, DESTINATION, " + "AGENT_NAME, COMMODITY, "
-            + "WEIGHT_BREAK, CURRENCY, " + "VALUE, VALID_FROM, VALID_TO)";
+            + "WEIGHT_BREAK, CURRENCY, " + "VALUE, STATUS, VALID_FROM, VALID_TO)";
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -41,9 +41,8 @@ public class ContractServiceImpl implements ContractService {
     public Contract addOrEditContract(Contract contract) {
         System.out.println("Tried to INSERT the following :");
         contract.print();
-
         
-        // generate sql Date objects from util Date objects for enabling DB INSTERT operation
+        // generate sql Date objects from util Date objects for enabling DB INSERT operation
         DateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
         System.out.println("DATE FROM IS ==== " + contract.getValidFrom().toString());
         System.out.println("DATE TO IS ==== " + contract.getValidTo().toString());
@@ -53,7 +52,7 @@ public class ContractServiceImpl implements ContractService {
         int rowsAffected = -1;
         
         if(allFieldsAreProvided(contract)) {
-            String insertSql = "INSERT INTO " + CONTRACTS_TABLE + " " + TABLE_FIELDS + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String insertSql = "INSERT INTO " + CONTRACTS_TABLE + " " + TABLE_FIELDS + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             rowsAffected = jdbcTemplate.update(insertSql,
                                 contract.getOrigin(),
                                 contract.getDestination(),
@@ -62,6 +61,7 @@ public class ContractServiceImpl implements ContractService {
                                 contract.getWeightBreak(),
                                 contract.getCurrency(),
                                 contract.getValue(),
+                                contract.getStatus(),
                                 fromDate,
                                 toDate);
         } else {

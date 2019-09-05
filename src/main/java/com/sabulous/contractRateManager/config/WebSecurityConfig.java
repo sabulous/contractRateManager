@@ -20,7 +20,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/", "/hello").permitAll()
+                .antMatchers("/", "/hello", "h2-console/**").permitAll()
                     // DO NOT allow anything else
                     // any request besides above line (ones in the antMatchers) require authentication
                     .anyRequest().authenticated()
@@ -34,6 +34,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Disable CSRF (cross site request forgery)
         http.csrf().disable();
+        
+        // required to enable accessing h2-console
+        http.headers().frameOptions().disable();
+
     }
 
     @Bean

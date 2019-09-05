@@ -46,6 +46,9 @@ public class Contract {
     @NotNull
     private Date validTo;
 
+    @NotNull
+    private String status;
+
     public Integer getId() {
         return id;
     }
@@ -144,5 +147,13 @@ public class Contract {
 
     public void print() {
         System.out.printf("%d %s %s %s %s %s\n", id, origin, destination, agentName, validFrom.toString(), validTo.toString());
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

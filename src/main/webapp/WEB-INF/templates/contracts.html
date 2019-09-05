@@ -36,6 +36,7 @@
                     <td>VALUE</td>
                     <td>VALID FROM</td>
                     <td>VALID TO</td>
+                    <td>STATUS</td>
                 </thead>
 
                 <form id="contractRowForm" th:action="@{/contracts/edit}" th:object="${contract}" method="post">
@@ -50,6 +51,7 @@
                     <td th:id="value" th:text="${contract.value}"></td>
                     <td th:id="from" th:text="${contract.validFrom}"></td>
                     <td th:id="to" th:text="${contract.validTo}"></td>
+                    <td th:id="status" th:text="${contract.status}"></td>
 
                     <td class="buttons">
                             <!-- th:href="${'/contracts/edit/' + contract.id}" -->
@@ -59,12 +61,12 @@
                     </td>
                 </tr>
                 </form>
-                <!-- Trigger/Open The Modal -->
-                <a id="addContractBtn" class="btn btn-default">Add New Contract</a>
-                <!-- <a class="btn btn-default" th:href="${'/contracts/addMultiple'}">Add Multiple</a> -->
-
             </table>
-        </div>        
+        </div>
+        
+        <!-- Trigger/Open The Modal -->
+        <a id="addContractBtn" class="btn btn-default">Add New Contract</a>
+
     </div>
 
     <div>
@@ -90,6 +92,7 @@
                                 <input type="text" class="short" placeholder="Value" th:field="*{value}"/>
                                 <input type="text" class="long" placeholder="Valid From (YYYY-MM-DD)" th:field="*{validFrom}"/>
                                 <input type="text" class="long" placeholder="Valid To (YYYY-MM-DD)" th:field="*{validTo}"/>
+                                <input type="text" class="long" placeholder="Status" th:field="*{status}"/>
                             </p>
                             <p>
                                 <input type="submit" id="btn-submit" value="Submit"/>
@@ -132,7 +135,6 @@
             if(editOrSaveBtn.innerText == 'Edit') {
                 editOrSaveBtn.innerText = 'Save';
             } else {
-
                 editOrSaveBtn.innerText = 'Edit';
             }
             // END -- change Edit Button on click -- END
