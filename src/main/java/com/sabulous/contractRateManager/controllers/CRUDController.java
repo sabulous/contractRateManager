@@ -21,20 +21,20 @@ public class CRUDController {
 
     @GetMapping("/contracts")
     public String getContracts(Model model) {
-        model.addAttribute("contracts", contractService.getAllContracts());
+        model.addAttribute("contracts", contractService.listAll());
         model.addAttribute("contract", new Contract());
         return "contracts";
     }
-
+    
     @RequestMapping("/contracts/delete/{contractId}")
     public String deleteContract(@PathVariable int contractId) {
-        contractService.deleteContract(contractId);
+        contractService.delete(contractId);
         return "redirect:/contracts";
     }
 
     @PostMapping("contracts/add")
     public String addContract(@ModelAttribute("contract") Contract contract, BindingResult result ) {
-        contractService.addOrEditContract(contract);
+        contractService.saveOrUpdate(contract);
         contract.print();
         return "redirect:/contracts"; // TODO show details of new contract for possible editing
     }

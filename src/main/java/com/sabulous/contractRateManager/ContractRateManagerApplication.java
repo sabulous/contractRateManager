@@ -16,8 +16,8 @@ public class ContractRateManagerApplication {
 		ApplicationContext ctx = SpringApplication.run(ContractRateManagerApplication.class, args);
 		System.out.println("hey");
 		
-		ContractService contractService = (ContractService)ctx.getBean(ContractService.class);
-		contractService.printContracts();
+		// ContractService contractService = (ContractService)ctx.getBean(ContractService.class);
+		// contractService.printContracts();
 
 		EmailService emailService = (EmailService)ctx.getBean(EmailService.class);
 		emailService.sendNotification("","","");

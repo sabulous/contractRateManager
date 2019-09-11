@@ -1,8 +1,6 @@
 package com.sabulous.contractRateManager.model;
 
 import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -118,14 +116,6 @@ public class Contract {
     }
 
     public void setValidFrom(Date validFrom) {
-        // java.util.Date utilDate = null;
-        // try {
-        //     utilDate = new SimpleDateFormat("dd-MM-yyyy").parse(validFrom);
-        // } catch (ParseException e) {
-        //     // TODO Auto-generated catch block
-        //     e.printStackTrace();
-        // }
-        // this.validFrom = new java.sql.Date(utilDate.getTime());
         this.validFrom = validFrom;
     }
 
@@ -134,14 +124,6 @@ public class Contract {
     }
 
     public void setValidTo(Date validTo) {
-        // java.util.Date utilDate = null;
-        // try {
-        //     utilDate = new SimpleDateFormat("dd-MM-yyyy").parse(validTo);
-        // } catch (ParseException e) {
-        //     // TODO Auto-generated catch block
-        //     e.printStackTrace();
-        // }
-        // this.validTo = new java.sql.Date(utilDate.getTime());
         this.validTo = validTo;
     }
 
