@@ -5,7 +5,6 @@
     <title>Show Contracts</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <!-- <link rel="stylesheet" href="../styles/main.css"> -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/modalPopup.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -40,26 +39,25 @@
                 </thead>
 
                 <form id="contractRowForm" th:action="@{/contracts/edit}" th:object="${contract}" method="post">
-                <tr th:id="'contractRow' + ${contract.id}" th:each="contract : ${contracts}">
-                    <td th:id="id" th:text="${contract.id}"></td>
-                    <td th:id="org" th:text="${contract.origin}"></td>
-                    <td th:id="des" th:text="${contract.destination}"></td>
-                    <td th:id="agt" th:text="${contract.agentName}"></td>
-                    <td th:id="comm" th:text="${contract.commodity}"></td>
-                    <td th:id="wb" th:text="${contract.weightBreak}"></td>
-                    <td th:id="curr" th:text="${contract.currency}"></td>
-                    <td th:id="value" th:text="${contract.value}"></td>
-                    <td th:id="from" th:text="${contract.validFrom}"></td>
-                    <td th:id="to" th:text="${contract.validTo}"></td>
-                    <td th:id="status" th:text="${contract.status}"></td>
+                    <tr th:id="'contractRow' + ${contract.id}" th:each="contract : ${contracts}">
+                        <td th:id="id" th:text="${contract.id}"></td>
+                        <td th:id="org" th:text="${contract.origin}"></td>
+                        <td th:id="des" th:text="${contract.destination}"></td>
+                        <td th:id="agt" th:text="${contract.agentName}"></td>
+                        <td th:id="comm" th:text="${contract.commodity}"></td>
+                        <td th:id="wb" th:text="${contract.weightBreak}"></td>
+                        <td th:id="curr" th:text="${contract.currency}"></td>
+                        <td th:id="value" th:text="${contract.value}"></td>
+                        <td th:id="from" th:text="${contract.validFrom}"></td>
+                        <td th:id="to" th:text="${contract.validTo}"></td>
+                        <td th:id="status" th:text="${contract.status}"></td>
 
-                    <td class="buttons">
-                            <!-- th:href="${'/contracts/edit/' + contract.id}" -->
-                        <a class="btn btn-default" th:id="'editOrSaveBtn' + ${contract.id}"
-                            th:onclick="'javascript:editOrSaveHandler(' + ${contract.id} + ');'">Edit</a>
-                        <a class="btn btn-default" th:href="${'/contracts/delete/' + contract.id}">Delete</a>
-                    </td>
-                </tr>
+                        <td class="buttons">
+                            <a class="btn btn-default" th:id="'editOrSaveBtn' + ${contract.id}"
+                                th:onclick="'javascript:editOrSaveHandler(' + ${contract.id} + ');'">Edit</a>
+                            <a class="btn btn-default" th:href="${'/contracts/delete/' + contract.id}">Delete</a>
+                        </td>
+                    </tr>
                 </form>
             </table>
         </div>
@@ -78,7 +76,7 @@
                 <span class="close">&times;</span>
                 <table class="table">
                     <thead>
-                        Specify the details of new contract
+                        <p>Specify the details of new contract :</p>
                     </thead>
                     <tr>
                         <form id="submitForm" th:action="@{/contracts/add}" th:object="${contract}" method="post">
@@ -99,16 +97,10 @@
                                 <input type="reset" id="btn-reset" value="Reset"/>
                             </p>
                         </form>
-                        <!-- <td class="modalButtons">
-                            th:href="${'/contracts/edit/' + contract.id}"
-                            <a class="btn btn-default">Delete</a>
-                        </td> -->
                     </tr>
                 </table>
             </form>
-                <!-- <a class="btn btn-default" th:href="${'/contracts/add'}">Submit</a> -->
             </div>
-
         </div>
     </div>
 
@@ -116,7 +108,7 @@
         // id stands for CONTRACT ID
         function editOrSaveHandler(id) {
             var tableRow = document.getElementById('contractRow' + id);
-            //alert(tableRow.cells.namedItem("id").innerHTML);// reach a td in a tr (WORKS)
+            //alert(tableRow.cells.namedItem("id").innerHTML);// reach a td in a tr (TESTED)
 
             // make editable the fields of contract row
             for(cell of tableRow.cells) {
@@ -130,7 +122,7 @@
             tableRow.removeAttribute("bgcolor");
             tableRow.setAttribute("bgcolor","yellow");
 
-            // BEGIN -- change Edit Button text on click -- BEGIN
+            // START -- change Edit Button text on click -- START
             var editOrSaveBtn = document.getElementById("editOrSaveBtn" + id);
             if(editOrSaveBtn.innerText == 'Edit') {
                 editOrSaveBtn.innerText = 'Save';

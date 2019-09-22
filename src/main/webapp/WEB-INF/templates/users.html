@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Users</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div th:if="${not #lists.isEmpty(users)}">                    
+            <h1>User List</h1>
+            <form id="userRowForm" th:action="@{/users/edit}" th:object="${user}" method="post">
+                <table class="table table-striped">
+                    <thead>
+                        <td>ID</td>
+                        <td>NAME</td>
+                        <td>SURNAME</td>
+                        <td>EMAIL</td>
+                        <td>ENCRYPTED PASSWORD</td>
+                        <td>ROLES</td>
+                    </thead>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.name}"></td>
+                        <td th:text="${user.surname}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.encryptedPassword}"></td>
+        
+                        <td>
+                            <div th:each="r : ${user.roles}">
+                                <p th:text="${r.role}"></p>
+                            </div>                           
+                        </td>
+
+                        <td class="buttons">
+                            <a class="btn btn-default" th:id="'editOrSaveBtn' + ${user.id}"
+                                th:onclick="'javascript:editOrSaveHandler(' + ${user.id} + ');'">Edit</a>
+                            <a th:id="'deleteUserBtn' + ${user.id}" class="btn btn-default">Delete</a>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        
+        <!-- Trigger/Open The Modal -->
+        <a id="addUserBtn" class="btn btn-default">Add New User</a>
+
+    </div>
+
+    <div>
+        <!-- The Modal Popup -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal form content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <table class="table">
+                    <thead>
+                        Specify the details of new user
+                    </thead>
+                    <tr>
+                        <form id="submitForm" th:action="@{/users/add}" th:object="${user}" method="post">
+                            <p>
+                                <input type="text" class="short" placeholder="Id" th:field="*{id}"  />
+                                <input type="text" class="short" placeholder="Name" th:field="*{name}"/>
+                                <input type="text" class="long" placeholder="Surname" th:field="*{surname}"/>
+                                <input type="text" class="long" placeholder="E-Mail" th:field="*{email}"/>
+                                <input type="text" class="long" placeholder="Password" th:field="*{password}"/>
+                                <p>Roles :</p>
+                                <fieldset id="roles" th:each="role, stat : *{roles}">
+                                    <input type="text" th:field="*{roles[__${stat.index}__].role}" />                            
+                                    <!-- <button type="button" name="deleteRole" th:value="${stat.index}">Remove item</button> -->
+                                </fieldset>
+                                <button type="button" name="addRole">Add new role</button>
+                            </p>
+                            <p>
+                                <input type="submit" id="btn-submit" value="Submit"/>
+                                <input type="reset" id="btn-reset" value="Reset"/>
+                            </p>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+<script>
+    $('a').click(
+        function(event) {
+            if(this.id.startsWith('deleteUserBtn')) {
+               let userToDelete = this.id.substr(13); // parses the id of user to delete
+               $.ajax({
+                    type: "DELETE",
+                    url: "/users/delete/" + userToDelete,
+                    data: "id=" + userToDelete,
+                    dataType:'text',
+                    success: function(msg){
+                                // alert("Data Deleted: " + msg);
+                                // above is the return value string from controller.
+                                window.location.replace("/users");
+                            }
+                    }
+                );
+            }
+        }
+    );
+</script>
+
+<script>
+
+    $( document ).ajaxComplete(function( event, xhr, settings ) {
+        if ( settings.url === "/users/add" ) {
+            window.location.replace("/users");
+        }
+    });
+
+    $('button[name="addRole"]').click(
+        function (event) {
+            let rolesFieldset = document.getElementById('roles');
+            let dataOfRoles = $('#roles').serializeArray();
+            let inputCount = $('#roles input').length;
+            let input = document.createElement('input');
+            
+            input.type = 'text';
+            input.id='roles' + inputCount + '.role';
+            input.setAttribute('name', name='roles[' + inputCount + '].role');
+            input.setAttribute('value', name='USER');
+
+            rolesFieldset.appendChild(input);
+        }
+    );
+</script>
+
+<script>
+
+$('input[type="submit"]').click(function (event) {
+    event.preventDefault();
+
+    var userData = $('#submitForm').serializeArray();
+
+    userDataObj = {};
+    $(userData).each(
+        function(i, field) {
+            userDataObj[field.name] = field.value;
+        }
+    );
+
+    var roleData = $('#roles').serializeArray();
+
+    roleDataObj = [];
+    let roleIdx = 0;
+    $(roleData).each(function(i, field){        
+        userDataObj['roles[' + roleIdx + '].role'] = field.value;
+        roleDataObj.push(field.value);
+        roleIdx++;
+    });
+
+    $.post('/users/add', $.param(userDataObj));
+});
+
+</script>
+
+<script>
+function editOrSaveHandler(userId) {
+
+}
+</script>
+
+<script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("addUserBtn");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on the button, open the modal 
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+</html>

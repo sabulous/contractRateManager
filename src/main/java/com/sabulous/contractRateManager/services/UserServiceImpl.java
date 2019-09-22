@@ -3,15 +3,16 @@ package com.sabulous.contractRateManager.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sabulous.contractRateManager.model.Role;
 import com.sabulous.contractRateManager.model.User;
 import com.sabulous.contractRateManager.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-//@Profile("springdatajpa")
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
@@ -20,16 +21,7 @@ public class UserServiceImpl implements UserService {
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-
-    // private EncryptionService encryptionService;
     
-    // @Autowired
-    // public void setEncryptionService(EncryptionService encryptionService) {
-    //     this.encryptionService = encryptionService;
-    // }
-
-
     @Override
     public List<?> listAll() {
         List<User> users = new ArrayList<>();
@@ -43,13 +35,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User saveOrUpdate(User obj) {
+    public User saveOrUpdate(User user) {
+        
+        if(user.getEncryptedPassword() == null) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setEncryptedPassword(encoder.encode(user.getPassword()));
+        }
 
-    //     if(domainObject.getPassword() != null){
-    //         domainObject.setEncryptedPassword(encryptionService.encryptString(domainObject.getPassword()));
-    //     }
-    
-        return userRepository.save(obj);
+        return userRepository.save(user);
     }
  
     @Override

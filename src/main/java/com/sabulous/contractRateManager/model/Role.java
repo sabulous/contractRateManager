@@ -1,9 +1,8 @@
 package com.sabulous.contractRateManager.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -14,14 +13,25 @@ import java.util.List;
 @Table(name = "ROLE")
 public class Role {
 
+    public Role() {
+
+    }
+    
+    public Role(String role) {
+        this.setRole(role);
+    }
+
     @Id
     private String role;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable
-    // ~ defaults to @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "role_id"),
-    //     inverseJoinColumns = @joinColumn(name = "user_id"))
+    @ManyToMany(mappedBy = "roles", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<User> users = new ArrayList<>();
+
+    // @ManyToMany(fetch = FetchType.EAGER)
+    // // @JoinTable
+    // // ~ defaults to @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "role_id"),
+    // //     inverseJoinColumns = @joinColumn(name = "user_id"))
+    // private List<User> users = new ArrayList<>();
 
     public String getRole() {
         return role;
@@ -52,6 +62,10 @@ public class Role {
     public void removeUser(User user){
         this.users.remove(user);
         user.getRoles().remove(this);
+    }
+
+    public void print() {
+        System.out.print(this.role + "\nrole has been PRINTED\n");
     }
 
 }

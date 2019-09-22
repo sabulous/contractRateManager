@@ -3,6 +3,9 @@ package com.sabulous.contractRateManager.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.*;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,9 +17,17 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.assertj.core.util.Lists;
+
 @Entity
 @Table(name = "USER")
 public class User {
+
+    public User() {
+        this.setRoles(new ArrayList<Role>(Lists.newArrayList(new Role("USER"))));
+        System.out.println("SIZE OF THE ROLE LIST upon creation of the user:" + this.getRoles().size());
+        // System.out.println("is role List NULL? :" + this.getRoles() == null);
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,11 +47,26 @@ public class User {
 
     private String encryptedPassword;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable
-    // ~ defaults to @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "user_id"),
-    //     inverseJoinColumns = @joinColumn(name = "role_id"))
+    // @ManyToMany(fetch = FetchType.LAZY,
+    // cascade = {
+    //     CascadeType.PERSIST,
+    //     CascadeType.MERGE
+    // })
+    
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "user_roles",
+        joinColumns = { @JoinColumn(name = "user_id") },
+        inverseJoinColumns = { @JoinColumn(name = "role") })
     private List<Role> roles = new ArrayList<>();
+
+
+
+    // @JoinTable
+    // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    // // ~ defaults to @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "user_id"),
+    // //     inverseJoinColumns = @joinColumn(name = "role_id"))
+    // private List<Role> roles = new ArrayList<>();
+    
     private Integer failedLoginAttempts = 0;
 
     public Integer getId() {
@@ -76,7 +102,10 @@ public class User {
     }
 
     public void print() {
-        System.out.printf("%d %s %s %s %s %s\n", id, email, name, surname, roles.toString());
+        System.out.printf("%d %s %s %s %s %s %d\n", id, email, name, surname, password, encryptedPassword, failedLoginAttempts);
+        System.out.println("ROLES from the User.java via print() method:");
+        roles.forEach(x -> {x.print(); System.out.print("-");});
+        System.out.println("\nEND");
     }
 
     public void setId(int id) {
