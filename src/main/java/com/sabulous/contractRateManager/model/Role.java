@@ -27,12 +27,6 @@ public class Role {
     @ManyToMany(mappedBy = "roles", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<User> users = new ArrayList<>();
 
-    // @ManyToMany(fetch = FetchType.EAGER)
-    // // @JoinTable
-    // // ~ defaults to @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "role_id"),
-    // //     inverseJoinColumns = @joinColumn(name = "user_id"))
-    // private List<User> users = new ArrayList<>();
-
     public String getRole() {
         return role;
     }
@@ -65,7 +59,7 @@ public class Role {
     }
 
     public void print() {
-        System.out.print(this.role + "\nrole has been PRINTED\n");
+        System.out.print("the role is " + this.role);
     }
 
 }

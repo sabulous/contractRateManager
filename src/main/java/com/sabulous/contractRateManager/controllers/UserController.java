@@ -1,16 +1,13 @@
 package com.sabulous.contractRateManager.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.sabulous.contractRateManager.model.Role;
-import com.sabulous.contractRateManager.model.RoleListDTO;
 import com.sabulous.contractRateManager.model.User;
 import com.sabulous.contractRateManager.services.UserService;
 
-import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

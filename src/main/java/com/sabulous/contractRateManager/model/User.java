@@ -7,7 +7,6 @@ import javax.persistence.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,8 +24,6 @@ public class User {
 
     public User() {
         this.setRoles(new ArrayList<Role>(Lists.newArrayList(new Role("USER"))));
-        System.out.println("SIZE OF THE ROLE LIST upon creation of the user:" + this.getRoles().size());
-        // System.out.println("is role List NULL? :" + this.getRoles() == null);
     }
 
     @Id
@@ -46,12 +43,6 @@ public class User {
     private String password;
 
     private String encryptedPassword;
-
-    // @ManyToMany(fetch = FetchType.LAZY,
-    // cascade = {
-    //     CascadeType.PERSIST,
-    //     CascadeType.MERGE
-    // })
     
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "user_roles",
@@ -59,14 +50,6 @@ public class User {
         inverseJoinColumns = { @JoinColumn(name = "role") })
     private List<Role> roles = new ArrayList<>();
 
-
-
-    // @JoinTable
-    // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    // // ~ defaults to @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "user_id"),
-    // //     inverseJoinColumns = @joinColumn(name = "role_id"))
-    // private List<Role> roles = new ArrayList<>();
-    
     private Integer failedLoginAttempts = 0;
 
     public Integer getId() {
