@@ -3,29 +3,34 @@ package com.sabulous.contractRateManager.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sabulous.contractRateManager.model.Role;
 import com.sabulous.contractRateManager.model.User;
 import com.sabulous.contractRateManager.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Service("userService")
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-    
+
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    private EncryptionService encryptionService;
+    
+    @Autowired
+    public void setEncryptionService(EncryptionService encryptionService) {
+        this.encryptionService = encryptionService;
     }
     
     @Override
     public List<?> listAll() {
         List<User> users = new ArrayList<>();
-        userRepository.findAll().forEach(users::add); //fun with Java 8
+        userRepository.findAll().forEach(users::add);
         return users;
     }
 
@@ -37,12 +42,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveOrUpdate(User user) {
         
-        if(user.getEncryptedPassword() == null) {
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setEncryptedPassword(encoder.encode(user.getPassword()));
+        if(user.getPassword() == null) {
+            return null;
+        }
+        
+        // OPTIONS FOR PASSWORD ENCRYPTION
+        // #1
+        user.setEncryptedPassword(encryptionService.encodeString(user.getPassword()));
+        // above code can be used with PasswordEncoderFactories.createDelegatingPasswordEncoder() created as @Bean in configuration
+
+        // #2
+        // user.setEncryptedPassword("{bcrypt}" + encryptionService.encodeString(user.getPassword()));
+        // in order to user the code above, new BCryptPasswordEncoder() must be created as @Bean in configuration
+
+        if(userRepository.findByUsername(user.getUsername()) == null) {
+            return userRepository.save(user);
+        } else {
+            return null;
         }
 
-        return userRepository.save(user);
     }
  
     @Override
@@ -50,10 +68,10 @@ public class UserServiceImpl implements UserService {
     public void delete(Integer id) {
         userRepository.deleteById(id);
     }
-    
-    @Override
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+  
 }

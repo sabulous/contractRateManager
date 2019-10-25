@@ -36,6 +36,7 @@
                     <td>VALID FROM</td>
                     <td>VALID TO</td>
                     <td>STATUS</td>
+                    <td>CREATED BY</td>
                 </thead>
 
                 <form id="contractRowForm" th:action="@{/contracts/edit}" th:object="${contract}" method="post">
@@ -51,7 +52,7 @@
                         <td th:id="from" th:text="${contract.validFrom}"></td>
                         <td th:id="to" th:text="${contract.validTo}"></td>
                         <td th:id="status" th:text="${contract.status}"></td>
-
+                        <td th:id="createdBy" th:text="${contract.createdBy}"></td>
                         <td class="buttons">
                             <a class="btn btn-default" th:id="'editOrSaveBtn' + ${contract.id}"
                                 th:onclick="'javascript:editOrSaveHandler(' + ${contract.id} + ');'">Edit</a>
@@ -91,6 +92,7 @@
                                 <input type="text" class="long" placeholder="Valid From (YYYY-MM-DD)" th:field="*{validFrom}"/>
                                 <input type="text" class="long" placeholder="Valid To (YYYY-MM-DD)" th:field="*{validTo}"/>
                                 <input type="text" class="long" placeholder="Status" th:field="*{status}"/>
+                                <input type="text" class="long" placeholder="Created By" th:field="*{createdBy}" readonly/>
                             </p>
                             <p>
                                 <input type="submit" id="btn-submit" value="Submit"/>

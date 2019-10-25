@@ -2,6 +2,7 @@ package com.sabulous.contractRateManager.controllers;
 
 import com.sabulous.contractRateManager.model.Contract;
 import com.sabulous.contractRateManager.services.ContractService;
+import com.sabulous.contractRateManager.services.IUserDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,10 +20,17 @@ public class CRUDController {
     @Autowired
     private ContractService contractService;
 
+    @Autowired
+    private IUserDetailsService userDetailsService;
+
     @GetMapping("/contracts")
     public String getContracts(Model model) {
-        model.addAttribute("contracts", contractService.listAll());
-        model.addAttribute("contract", new Contract());
+        model.addAttribute("contracts", contractService.listContractsByUserId(userDetailsService.getLoggedInUserId())); // returns contracts only if owned by the logged in user
+        
+        Contract contract = new Contract();
+        contract.setCreatedBy(userDetailsService.getLoggedInUserId());
+        model.addAttribute("contract", contract);
+        
         return "contracts";
     }
     
@@ -36,12 +44,7 @@ public class CRUDController {
     public String addContract(@ModelAttribute("contract") Contract contract, BindingResult result ) {
         contractService.saveOrUpdate(contract);
         contract.print();
-        return "redirect:/contracts"; // TODO show details of new contract for possible editing
-    }
-
-    @RequestMapping("contracts/addMultiple")
-    public String addContractMultiple() {
-        // TODO add service invocation
         return "redirect:/contracts";
     }
+
 }

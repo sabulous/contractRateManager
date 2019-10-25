@@ -2,16 +2,20 @@ package com.sabulous.contractRateManager.model;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "ROLE")
-public class Role {
+public class Role implements GrantedAuthority {
 
     public Role() {
 
@@ -22,9 +26,13 @@ public class Role {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    
     private String role;
 
-    @ManyToMany(mappedBy = "roles", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade={CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinTable
     private List<User> users = new ArrayList<>();
 
     public String getRole() {
@@ -44,8 +52,8 @@ public class Role {
     }
 
     public void addUser(User user){
-        if(!this.users.contains(user)){
-            this.users.add(user);
+        if(!users.contains(user)){
+            users.add(user);
         }
 
         if(!user.getRoles().contains(this)){
@@ -60,6 +68,19 @@ public class Role {
 
     public void print() {
         System.out.print("the role is " + this.role);
+    }
+
+    @Override
+    public String getAuthority() {
+        return this.role;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
 }

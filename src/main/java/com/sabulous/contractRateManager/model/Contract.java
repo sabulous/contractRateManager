@@ -1,20 +1,25 @@
 package com.sabulous.contractRateManager.model;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "CONTRACT")
 public class Contract {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @NotNull
@@ -47,8 +52,22 @@ public class Contract {
     @NotNull
     private String status;
 
+    private Integer createdBy;
+
+    @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
+    @JoinTable
+    private List<User> users = new ArrayList<>();
+
     public Integer getId() {
         return id;
+    }
+
+    public Integer getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Integer createdBy) {
+        this.createdBy = createdBy;
     }
 
     public void setId(Integer id) {
@@ -137,5 +156,35 @@ public class Contract {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public void addUser(User user) {
+        if(this.getUsers().contains(user)) {
+            return;
+        }
+        users.add(user);
+        user.addContract(this);
+    }
+
+    public void removeUser(User user) {
+        if(!users.contains(user)) {
+            return;
+        }
+
+        users.remove(user);
+
+        user.removeContract(this);
     }
 }
