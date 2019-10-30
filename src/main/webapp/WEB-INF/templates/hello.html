@@ -1,10 +1,56 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Hello World</title>
-    </head>
-    <body>
-        <h1>Hello world!</h1>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Portal Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+</head>
+
+<body style="padding-left: 1%;">
+    <div class="container-fluid bg-info" style="margin-block-end: 10px;">
+        <div sec:authorize="hasRole('USER')">
+            <em>Logged in user with role USER.</em>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <em>Logged in user with role ADMIN.</em>
+        </div>
+        <div sec:authorize="hasRole('ROLE_USER')">
+            <em>Logged in user with role ROLE_USER.</em>
+        </div>
+        <div sec:authorize="hasRole('ROLE_ADMIN')">
+            <em>Logged in user with role ROLE_ADMIN.</em>
+        </div>
+        <div sec:authorize="isAnonymous()">
+            <em>No logged in user available. Currently you are ANONYMOUS.</em>
+        </div>
+    </div>
+        <div class="container-fluid" style="margin-bottom: 10px;">
+            <div class="col-sm-9">
+                <h2 style="display: inline;">Contract Rate Management Portal</h2>
+            </div>
+            <div class="col-sm-3">
+                <a id="loginBtn" href="login" class="btn btn-link" sec:authorize="isAnonymous()">Login</a>
+                <span sec:authorize="isAuthenticated()">
+                    <span>Hello [[${#httpServletRequest.remoteUser}]]!</span>
+                    <form th:action="@{/logout}" method="post">
+                        <input class="btn btn-link" type="submit" value="Logout"/>
+                    </form>
+                </span>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="col-sm-12">
+                <p>
+                    <a id="myContractsBtn" href="contracts" class="btn btn-link">My Contracts</a>
+                </p>
+                <p>
+                    <a id="displayUsersBtn" href="users" class="btn btn-link">Manage Users</a>
+                </p>
+            </div>
+        </div>
+</body>
 </html>

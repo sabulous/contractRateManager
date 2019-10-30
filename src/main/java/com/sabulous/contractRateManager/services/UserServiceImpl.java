@@ -3,6 +3,8 @@ package com.sabulous.contractRateManager.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sabulous.contractRateManager.model.Contract;
+import com.sabulous.contractRateManager.model.Role;
 import com.sabulous.contractRateManager.model.User;
 import com.sabulous.contractRateManager.repositories.UserRepository;
 
@@ -66,7 +68,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void delete(Integer id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).get();
+        List<Contract> contracts = user.getContracts();
+        List<Role> roles = user.getRoles();
+
+        for(Contract contract : contracts) {
+            contract.getUsers().remove(user);
+        }
+        for(Role role : roles) {
+            role.getUsers().remove(user);
+        }
+        userRepository.delete(user);
     }
 
     @Override

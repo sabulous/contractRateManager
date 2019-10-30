@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
@@ -42,6 +43,7 @@ public class ThymeleafConfig {
         // across different data types, so this flag is "false" by default
         // for safer backwards compatibility.
         templateEngine.setEnableSpringELCompiler(true);
+        templateEngine.addDialect(new SpringSecurityDialect()); // Required for Thymeleaf Security Extras
         return templateEngine;
     }
 
@@ -54,4 +56,5 @@ public class ThymeleafConfig {
         viewResolver.setViewNames(new String[] {".html", ".xhtml"});
         return viewResolver;
     }
+    
 }

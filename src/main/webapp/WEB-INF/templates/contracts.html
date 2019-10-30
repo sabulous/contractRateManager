@@ -1,71 +1,84 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <title>Show Contracts</title>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"/> -->
     <link rel="stylesheet" href="/css/modalPopup.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
-<body>
+<body style="padding: 1%;">
 
-    <div class="container">
-        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
-        </form>
-    </div>
+    <div class="container-fluid" >
 
-    <!-- MAIN LIST OF CONTRACTS -->
-    <div class="container">
-        <div th:if="${not #lists.isEmpty(contracts)}">                    
-        <h1>Contract List</h1>
-            <table class="table">
-                <thead>
-                    <td>ID</td>
-                    <td>ORIGIN</td>
-                    <td>DESTINATION</td>
-                    <td>AGENT NAME</td>
-                    <td>COMMODITY</td>
-                    <td>WEIGHT BREAK</td>
-                    <td>CURRENCY</td>
-                    <td>VALUE</td>
-                    <td>VALID FROM</td>
-                    <td>VALID TO</td>
-                    <td>STATUS</td>
-                    <td>CREATED BY</td>
-                </thead>
-
-                <form id="contractRowForm" th:action="@{/contracts/edit}" th:object="${contract}" method="post">
-                    <tr th:id="'contractRow' + ${contract.id}" th:each="contract : ${contracts}">
-                        <td th:id="id" th:text="${contract.id}"></td>
-                        <td th:id="org" th:text="${contract.origin}"></td>
-                        <td th:id="des" th:text="${contract.destination}"></td>
-                        <td th:id="agt" th:text="${contract.agentName}"></td>
-                        <td th:id="comm" th:text="${contract.commodity}"></td>
-                        <td th:id="wb" th:text="${contract.weightBreak}"></td>
-                        <td th:id="curr" th:text="${contract.currency}"></td>
-                        <td th:id="value" th:text="${contract.value}"></td>
-                        <td th:id="from" th:text="${contract.validFrom}"></td>
-                        <td th:id="to" th:text="${contract.validTo}"></td>
-                        <td th:id="status" th:text="${contract.status}"></td>
-                        <td th:id="createdBy" th:text="${contract.createdBy}"></td>
-                        <td class="buttons">
-                            <a class="btn btn-default" th:id="'editOrSaveBtn' + ${contract.id}"
-                                th:onclick="'javascript:editOrSaveHandler(' + ${contract.id} + ');'">Edit</a>
-                            <a class="btn btn-default" th:href="${'/contracts/delete/' + contract.id}">Delete</a>
-                        </td>
-                    </tr>
-                </form>
-            </table>
+        <div class="container-fluid" style="margin-bottom: 10px;">
+            <div class="col-sm-9">
+                <h2 style="display: inline;">Contract Rate Management Portal</h2>
+            </div>
+            <div class="col-sm-3">
+                <a id="loginBtn" href="login" class="btn btn-link" sec:authorize="isAnonymous()">Login</a>
+                <span sec:authorize="isAuthenticated()">
+                    <span>Hello [[${#httpServletRequest.remoteUser}]]!</span>
+                    <form th:action="@{/logout}" method="post">
+                        <input class="btn btn-link" type="submit" value="Logout"/>
+                    </form>
+                </span>
+            </div>
         </div>
-        
-        <!-- Trigger/Open The Modal -->
-        <a id="addContractBtn" class="btn btn-default">Add New Contract</a>
 
+        <!-- MAIN LIST OF CONTRACTS -->
+        <div class="container-fluid">
+            <div th:if="${not #lists.isEmpty(contracts)}">                    
+            <h3>Contracts</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <td>ID</td>
+                        <td>ORIGIN</td>
+                        <td>DESTINATION</td>
+                        <td>AGENT NAME</td>
+                        <td>COMMODITY</td>
+                        <td>WEIGHT BREAK</td>
+                        <td>CURRENCY</td>
+                        <td>VALUE</td>
+                        <td>VALID FROM</td>
+                        <td>VALID TO</td>
+                        <td>STATUS</td>
+                        <td>CREATED BY</td>
+                    </thead>
+
+                    <form id="contractRowForm" th:action="@{/contracts/edit}" th:object="${contract}" method="post">
+                        <tr th:id="'contractRow' + ${contract.id}" th:each="contract : ${contracts}">
+                            <td th:id="id" th:text="${contract.id}"></td>
+                            <td th:id="org" th:text="${contract.origin}"></td>
+                            <td th:id="des" th:text="${contract.destination}"></td>
+                            <td th:id="agt" th:text="${contract.agentName}"></td>
+                            <td th:id="comm" th:text="${contract.commodity}"></td>
+                            <td th:id="wb" th:text="${contract.weightBreak}"></td>
+                            <td th:id="curr" th:text="${contract.currency}"></td>
+                            <td th:id="value" th:text="${contract.value}"></td>
+                            <td th:id="from" th:text="${contract.validFrom}"></td>
+                            <td th:id="to" th:text="${contract.validTo}"></td>
+                            <td th:id="status" th:text="${contract.status}"></td>
+                            <td th:id="createdBy" th:text="${contract.createdBy}"></td>
+                            <td class="buttons">
+                                <a class="btn btn-default" th:id="'editOrSaveBtn' + ${contract.id}"
+                                    th:onclick="'javascript:editOrSaveHandler(' + ${contract.id} + ');'">Edit</a>
+                                <a class="btn btn-default" th:href="${'/contracts/delete/' + contract.id}">Delete</a>
+                            </td>
+                        </tr>
+                    </form>
+                </table>
+            </div>
+            <!-- Trigger/Open The Modal -->
+            <a id="addContractBtn" class="btn btn-default">Add New Contract</a>
+
+        </div>
     </div>
 
     <div>

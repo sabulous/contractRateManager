@@ -108,17 +108,21 @@ public class User implements UserDetails {
     }
 
     public void addRole(Role role) {
-        if (!this.roles.contains(role)) {
-            this.roles.add(role);
+        if (roles.contains(role)) {
+            return;
         }
-
-        if (!role.getUsers().contains(this)) {
-            role.getUsers().add(this);
-        }
+        
+        roles.add(role);
+        
+        role.getUsers().add(this);
     }
 
     public void removeRole(Role role) {
-        this.roles.remove(role);
+        if(!roles.contains(role)) {
+            return;
+        }
+        roles.remove(role);
+
         role.getUsers().remove(this);
     }
 
