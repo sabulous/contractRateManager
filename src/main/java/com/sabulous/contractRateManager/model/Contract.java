@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -58,8 +57,20 @@ public class Contract {
     @JoinTable
     private List<User> users = new ArrayList<>();
 
+    private String primaryRole;
+
+    private String secondaryRole;
+
     public Integer getId() {
         return id;
+    }
+
+    public String getSecondaryRole() {
+        return secondaryRole;
+    }
+
+    public void setSecondaryRole(String secondaryRole) {
+        this.secondaryRole = secondaryRole;
     }
 
     public Integer getCreatedBy() {
@@ -186,5 +197,13 @@ public class Contract {
         users.remove(user);
 
         user.removeContract(this);
+    }
+
+    public String getPrimaryRole() {
+        return primaryRole;
+    }
+
+    public void setPrimaryRole(String primaryRole) {
+        this.primaryRole = primaryRole;
     }
 }

@@ -16,7 +16,9 @@
     <div class="container-fluid">
         <div class="container-fluid" style="margin-bottom: 10px;">
             <div class="col-sm-9">
-                <h2 style="display: inline;">Contract Rate Management Portal</h2>
+                <a href="home">
+                    <h2 style="display: inline;">Contract Rate Management Portal</h2>
+                </a>
             </div>
             <div class="col-sm-3">
                 <a id="loginBtn" href="login" class="btn btn-link" sec:authorize="isAnonymous()">Login</a>
@@ -42,7 +44,6 @@
                             <td>EMAIL</td>
                             <td>ENCRYPTED PASSWORD</td>
                             <td>ROLES</td>
-                            <td>CONTRACTS</td>
                         </thead>
                         <tr th:each="user : ${users}">
                             <td th:text="${user.id}"></td>
@@ -55,12 +56,6 @@
                             <td>
                                 <div th:each="r : ${user.roles}">
                                     <p th:text="${r.role}"></p>
-                                </div>                           
-                            </td>
-
-                            <td>
-                                <div th:each="c : ${user.contracts}">
-                                    <p th:text="${c.id}"></p>
                                 </div>                           
                             </td>
 

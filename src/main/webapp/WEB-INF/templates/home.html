@@ -11,17 +11,23 @@
 
 <body style="padding-left: 1%;">
     <div class="container-fluid bg-info" style="margin-block-end: 10px;">
-        <div sec:authorize="hasRole('USER')">
+        <div sec:authorize="hasAuthority('USER')">
             <em>Logged in user with role USER.</em>
         </div>
-        <div sec:authorize="hasRole('ADMIN')">
+        <div sec:authorize="hasAuthority('ADMIN')">
             <em>Logged in user with role ADMIN.</em>
         </div>
-        <div sec:authorize="hasRole('ROLE_USER')">
+        <div sec:authorize="hasAuthority('ROLE_USER')">
             <em>Logged in user with role ROLE_USER.</em>
         </div>
-        <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <div sec:authorize="hasAuthority('ROLE_ADMIN')">
             <em>Logged in user with role ROLE_ADMIN.</em>
+        </div>
+        <div sec:authorize="hasAuthority('EU1')">
+            <em>Logged in user with role EU1.</em>
+        </div>
+        <div sec:authorize="hasAuthority('EU2')">
+            <em>Logged in user with role EU2.</em>
         </div>
         <div sec:authorize="isAnonymous()">
             <em>No logged in user available. Currently you are ANONYMOUS.</em>
@@ -29,7 +35,9 @@
     </div>
         <div class="container-fluid" style="margin-bottom: 10px;">
             <div class="col-sm-9">
-                <h2 style="display: inline;">Contract Rate Management Portal</h2>
+                <a href="home">
+                    <h2 style="display: inline;">Contract Rate Management Portal</h2>
+                </a>
             </div>
             <div class="col-sm-3">
                 <a id="loginBtn" href="login" class="btn btn-link" sec:authorize="isAnonymous()">Login</a>
@@ -42,12 +50,20 @@
             </div>
         </div>
 
-        <div class="container-fluid">
+        <div class="container-fluid" sec:authorize="isAuthenticated()">
             <div class="col-sm-12">
-                <p>
-                    <a id="myContractsBtn" href="contracts" class="btn btn-link">My Contracts</a>
+                
+                <!-- <p sec:authentication='principal.authorities'></p> -->
+
+                <p sec:authorize="!hasAuthority('ADMIN')">
+                    <a id="contractsByRoleBtn" th:href="@{contractsByRole?role=__${@userDetailsService.getPrimaryRoleOfLoggedInUser()}__}" class="btn btn-link">
+                        Contracts of [[__${@userDetailsService.getPrimaryRoleOfLoggedInUser()}__]]
+                    </a>
                 </p>
                 <p>
+                    <a id="createdContractsBtn" href="contracts" class="btn btn-link">My Own Contracts</a>
+                </p>
+                <p sec:authorize="hasAuthority('ADMIN')">
                     <a id="displayUsersBtn" href="users" class="btn btn-link">Manage Users</a>
                 </p>
             </div>

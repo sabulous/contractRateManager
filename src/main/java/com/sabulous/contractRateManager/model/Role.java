@@ -31,7 +31,7 @@ public class Role implements GrantedAuthority {
     
     private String role;
 
-    @ManyToMany(cascade={CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade={CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable
     private List<User> users = new ArrayList<>();
 

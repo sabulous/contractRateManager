@@ -19,7 +19,9 @@
 
         <div class="container-fluid" style="margin-bottom: 10px;">
             <div class="col-sm-9">
-                <h2 style="display: inline;">Contract Rate Management Portal</h2>
+                <a href="home">
+                    <h2 style="display: inline;">Contract Rate Management Portal</h2>
+                </a>
             </div>
             <div class="col-sm-3">
                 <a id="loginBtn" href="login" class="btn btn-link" sec:authorize="isAnonymous()">Login</a>
@@ -49,10 +51,11 @@
                         <td>VALID FROM</td>
                         <td>VALID TO</td>
                         <td>STATUS</td>
+                        <td>OWNER</td>
                         <td>CREATED BY</td>
                     </thead>
 
-                    <form id="contractRowForm" th:action="@{/contracts/edit}" th:object="${contract}" method="post">
+                    <form id="contractRowForm" th:action="@{/contracts/edit}" method="post">
                         <tr th:id="'contractRow' + ${contract.id}" th:each="contract : ${contracts}">
                             <td th:id="id" th:text="${contract.id}"></td>
                             <td th:id="org" th:text="${contract.origin}"></td>
@@ -65,6 +68,7 @@
                             <td th:id="from" th:text="${contract.validFrom}"></td>
                             <td th:id="to" th:text="${contract.validTo}"></td>
                             <td th:id="status" th:text="${contract.status}"></td>
+                            <td th:id="primaryRole" th:text="${contract.primaryRole}"></td>
                             <td th:id="createdBy" th:text="${contract.createdBy}"></td>
                             <td class="buttons">
                                 <a class="btn btn-default" th:id="'editOrSaveBtn' + ${contract.id}"
@@ -105,6 +109,7 @@
                                 <input type="text" class="long" placeholder="Valid From (YYYY-MM-DD)" th:field="*{validFrom}"/>
                                 <input type="text" class="long" placeholder="Valid To (YYYY-MM-DD)" th:field="*{validTo}"/>
                                 <input type="text" class="long" placeholder="Status" th:field="*{status}"/>
+                                <input type="text" class="long" placeholder="Owner Role" th:field="*{primaryRole}" readonly/>
                                 <input type="text" class="long" placeholder="Created By" th:field="*{createdBy}" readonly/>
                             </p>
                             <p>
