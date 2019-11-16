@@ -35,7 +35,7 @@
         </div>
 
         <!-- MAIN LIST OF CONTRACTS -->
-        <div class="container-fluid">
+        <div id="contractList" class="container-fluid">
             <div th:if="${not #lists.isEmpty(contracts)}">                    
             <h3>Contracts</h3>
                 <table class="table table-striped">
@@ -55,28 +55,44 @@
                         <td>CREATED BY</td>
                     </thead>
 
-                    <form id="contractRowForm" th:action="@{/contracts/edit}" method="post">
-                        <tr th:id="'contractRow' + ${contract.id}" th:each="contract : ${contracts}">
-                            <td th:id="id" th:text="${contract.id}"></td>
-                            <td th:id="org" th:text="${contract.origin}"></td>
-                            <td th:id="des" th:text="${contract.destination}"></td>
-                            <td th:id="agt" th:text="${contract.agentName}"></td>
-                            <td th:id="comm" th:text="${contract.commodity}"></td>
-                            <td th:id="wb" th:text="${contract.weightBreak}"></td>
-                            <td th:id="curr" th:text="${contract.currency}"></td>
-                            <td th:id="value" th:text="${contract.value}"></td>
-                            <td th:id="from" th:text="${contract.validFrom}"></td>
-                            <td th:id="to" th:text="${contract.validTo}"></td>
-                            <td th:id="status" th:text="${contract.status}"></td>
-                            <td th:id="primaryRole" th:text="${contract.primaryRole}"></td>
-                            <td th:id="createdBy" th:text="${contract.createdBy}"></td>
+                    <tr th:id="'contractRow' + ${contract.id}" th:each="contract : ${contracts}">
+                        <form th:id="'contractRowForm' + ${contract.id}" th:action="@{/contracts/edit}" th:object="${contract}" method="post">
+                            <td th:id="id" th:text="${contract.id}" th:field="*{id}"></td>
+                            <td th:id="org" th:text="${contract.origin}" th:field="*{origin}"></td>
+                            <td th:id="des" th:text="${contract.destination}" th:field="*{destination}"></td>
+                            <td th:id="agt" th:text="${contract.agentName}" th:field="*{agentName}"></td>
+                            <td th:id="comm" th:text="${contract.commodity}" th:field="*{commodity}"></td>
+                            <td th:id="wb" th:text="${contract.weightBreak}" th:field="*{weightBreak}"></td>
+                            <td th:id="curr" th:text="${contract.currency}" th:field="*{currency}"></td>
+                            <td th:id="value" th:text="${contract.value}" th:field="*{value}"></td>
+                            <td th:id="from" th:text="${contract.validFrom}" th:field="*{validFrom}"></td>
+                            <td th:id="to" th:text="${contract.validTo}" th:field="*{validTo}"></td>
+                            <td th:id="status" th:text="${contract.status}" th:field="*{status}"></td>
+                            <td th:id="primaryRole" th:text="${contract.primaryRole}" th:field=*{primaryRole}></td>
+                            <td th:id="createdBy" th:text="${contract.createdBy}" th:field=*{createdBy}></td>
+
+                            <input type="hidden" th:id="hidden_id" th:field="*{id}"/>
+                            <input type="hidden" th:id="hidden_org" th:field="*{origin}"/>
+                            <input type="hidden" th:id="hidden_des" th:field="*{destination}"/>
+                            <input type="hidden" th:id="hidden_agt" th:field="*{agentName}"/>
+                            <input type="hidden" th:id="hidden_comm" th:field="*{commodity}"/>
+                            <input type="hidden" th:id="hidden_wb" th:field="*{weightBreak}"/>
+                            <input type="hidden" th:id="hidden_curr" th:field="*{currency}"/>
+                            <input type="hidden" th:id="hidden_value" th:field="*{value}"/>
+                            <input type="hidden" th:id="hidden_from" th:field="*{validFrom}"/>
+                            <input type="hidden" th:id="hidden_to" th:field="*{validTo}"/>
+                            <input type="hidden" th:id="hidden_status" th:field="*{status}"/>
+                            <input type="hidden" th:id="hidden_primaryRole" th:field="*{primaryRole}"/>
+                            <input type="hidden" th:id="hidden_createdBy" th:field="*{createdBy}"/>
+
                             <td class="buttons">
                                 <a class="btn btn-default" th:id="'editOrSaveBtn' + ${contract.id}"
                                     th:onclick="'javascript:editOrSaveHandler(' + ${contract.id} + ');'">Edit</a>
                                 <a class="btn btn-default" th:href="${'/contracts/delete/' + contract.id}">Delete</a>
                             </td>
-                        </tr>
-                    </form>
+                        </form>
+                    </tr>
+
                 </table>
             </div>
             <!-- Trigger/Open The Modal -->
@@ -128,33 +144,57 @@
         // id stands for CONTRACT ID
         function editOrSaveHandler(id) {
             var tableRow = document.getElementById('contractRow' + id);
+            copier('contractRow' + id);
             //alert(tableRow.cells.namedItem("id").innerHTML);// reach a td in a tr (TESTED)
 
             // make editable the fields of contract row
             for(cell of tableRow.cells) {
                 if(cell.className != "buttons" && cell.id != "id") {
-                    cell.removeAttribute("disabled");
-                    cell.setAttribute("contenteditable","true");
+                    if(cell.isContentEditable) {
+                        cell.setAttribute("contenteditable","false");
+                    } else {
+                        cell.setAttribute("contenteditable","true");
+                    }
                 }
             }
 
-            // color the row with yellow if Edit button clicked
-            tableRow.removeAttribute("bgcolor");
-            tableRow.setAttribute("bgcolor","yellow");
-
-            // START -- change Edit Button text on click -- START
             var editOrSaveBtn = document.getElementById("editOrSaveBtn" + id);
             if(editOrSaveBtn.innerText == 'Edit') {
                 editOrSaveBtn.innerText = 'Save';
+                tableRow.style.backgroundColor = "#AACABA";
             } else {
-                editOrSaveBtn.innerText = 'Edit';
-            }
-            // END -- change Edit Button on click -- END
+                // implement edited contract POST call
+                // var $jqTableRow = $(tableRow)
+                // var $contractObj = {};
 
-            //alert(editButton.id + ' is disabled: ' + editButton.disabled);
+                // $jqTableRow.children('td').not('.buttons').each(function(index){
+
+                //     $contractObj[$(this).attr('id')] = $(this).html();
+
+                // })
+
+                editOrSaveBtn.innerText = 'Edit';
+                tableRow.style.backgroundColor = null;
+                $("#contractRowForm" + id).submit();
+                // $.post('/users/add', $.param());
+            }
+
         }
     </script>
 
+    <script>
+        function copier(tableRowId) {
+            $('#' + tableRowId + " #hidden_id").attr("value", $('#' + tableRowId + " #id").html());
+            $('#' + tableRowId).children('td').not('.buttons').each(function (index) {
+                console.log(tableRowId, " copier called");
+                console.log($(this).html());
+                $(this).on('DOMSubtreeModified', function () {
+                    $('#' + tableRowId + ' #hidden_' + $(this).attr('id')).attr("value", $(this).html());
+                });
+            });
+        }
+    </script>
+    
     <script>
         // Get the modal
         var modal = document.getElementById("myModal");
@@ -182,6 +222,7 @@
             }
         }
     </script>
+ 
 </body>
 
 </html>

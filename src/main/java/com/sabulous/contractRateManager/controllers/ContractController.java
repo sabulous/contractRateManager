@@ -91,4 +91,11 @@ public class ContractController {
         return "redirect:/contracts";
     }
 
+    @PostMapping("contracts/edit")
+    public String editContract(@ModelAttribute("contract") Contract contract, BindingResult result) {
+        contractService.saveOrUpdate(contract);
+        contract.print();
+        return "redirect:/contracts";
+    }
+
 }

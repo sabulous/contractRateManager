@@ -138,7 +138,6 @@
 </script>
 
 <script>
-
     $( document ).ajaxComplete(function( event, xhr, settings ) {
         if ( settings.url === "/users/add" ) {
             window.location.replace("/users");
@@ -163,38 +162,37 @@
 </script>
 
 <script>
+    $('input[name="submitUserBtn"]').click(function (event) {
+        event.preventDefault();
 
-$('input[name="submitUserBtn"]').click(function (event) {
-    event.preventDefault();
+        var userData = $('#submitForm').serializeArray();
 
-    var userData = $('#submitForm').serializeArray();
+        userDataObj = {};
+        $(userData).each(
+            function(i, field) {
+                userDataObj[field.name] = field.value;
+            }
+        );
 
-    userDataObj = {};
-    $(userData).each(
-        function(i, field) {
-            userDataObj[field.name] = field.value;
-        }
-    );
+        var roleData = $('#roles').serializeArray();
 
-    var roleData = $('#roles').serializeArray();
+        roleDataObj = [];
+        let roleIdx = 0;
+        $(roleData).each(function(i, field){
+            userDataObj['roles[' + roleIdx + '].role'] = field.value;
+            roleDataObj.push(field.value);
+            roleIdx++;
+        });
 
-    roleDataObj = [];
-    let roleIdx = 0;
-    $(roleData).each(function(i, field){        
-        userDataObj['roles[' + roleIdx + '].role'] = field.value;
-        roleDataObj.push(field.value);
-        roleIdx++;
+        $.post('/users/add', $.param(userDataObj));
     });
-
-    $.post('/users/add', $.param(userDataObj));
-});
 
 </script>
 
 <script>
-function editOrSaveHandler(userId) {
+    function editOrSaveHandler(userId) {
 
-}
+    }
 </script>
 
 <script>
