@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import com.sabulous.contractRateManager.config.MainConfig;
 import com.sabulous.contractRateManager.config.ThymeleafConfig;
 import com.sabulous.contractRateManager.config.WebSecurityConfig;
-import com.sabulous.contractRateManager.controllers.CRUDController;
+import com.sabulous.contractRateManager.controllers.ContractController;
 import com.sabulous.contractRateManager.controllers.MainController;
 import com.sabulous.contractRateManager.controllers.UserController;
 import com.sabulous.contractRateManager.repositories.ContractRepository;
@@ -33,7 +33,7 @@ public class ContractRateManagerApplicationTests {
 	MainController mainController;
 
 	@Autowired
-	CRUDController crudController;
+	ContractController contractController;
 
 	@Autowired
 	UserController userController;
@@ -78,7 +78,7 @@ public class ContractRateManagerApplicationTests {
 	public void contextLoadTest() throws Exception {
 		//using AssertJ
 		assertThat(mainController).isNotNull();
-		assertThat(crudController).isNotNull();
+		assertThat(contractController).isNotNull();
 		assertThat(userController).isNotNull();
 
 		assertThat(mainConfig).isNotNull();
@@ -98,7 +98,7 @@ public class ContractRateManagerApplicationTests {
 
 		//using JUnit
 		assertNotNull(mainController);
-		assertNotNull(crudController);
+		assertNotNull(contractController);
 		assertNotNull(userController);
 		
 		assertNotNull(mainConfig);
