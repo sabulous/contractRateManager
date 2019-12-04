@@ -16,7 +16,9 @@
     <div class="container-fluid">
         <div class="container-fluid" style="margin-bottom: 10px;">
             <div class="col-sm-9">
-                <h2 style="display: inline;">Contract Rate Management Portal</h2>
+                <a href="home">
+                    <h2 style="display: inline;">Contract Rate Management Portal</h2>
+                </a>
             </div>
             <div class="col-sm-3">
                 <a id="loginBtn" href="login" class="btn btn-link" sec:authorize="isAnonymous()">Login</a>
@@ -42,7 +44,6 @@
                             <td>EMAIL</td>
                             <td>ENCRYPTED PASSWORD</td>
                             <td>ROLES</td>
-                            <td>CONTRACTS</td>
                         </thead>
                         <tr th:each="user : ${users}">
                             <td th:text="${user.id}"></td>
@@ -55,12 +56,6 @@
                             <td>
                                 <div th:each="r : ${user.roles}">
                                     <p th:text="${r.role}"></p>
-                                </div>                           
-                            </td>
-
-                            <td>
-                                <div th:each="c : ${user.contracts}">
-                                    <p th:text="${c.id}"></p>
                                 </div>                           
                             </td>
 
@@ -85,34 +80,26 @@
 
             <!-- Modal form content -->
             <div class="modal-content">
-                <span class="close">&times;</span>
-                <table class="table">
-                    <thead>
-                        Specify the details of new user
-                    </thead>
-                    <tr>
-                        <form id="submitForm" th:action="@{/users/add}" th:object="${user}" method="post">
-                            <p>
-                                <input type="text" class="short" placeholder="Id" th:field="*{id}"  />
-                                <input type="text" class="short" placeholder="Username" th:field="*{username}"/>
-                                <input type="text" class="short" placeholder="Name" th:field="*{name}"/>
-                                <input type="text" class="long" placeholder="Surname" th:field="*{surname}"/>
-                                <input type="text" class="long" placeholder="E-Mail" th:field="*{email}"/>
-                                <input type="text" class="long" placeholder="Password" th:field="*{password}"/>
-                                <p>Roles :</p>
-                                <fieldset id="roles" th:each="role, stat : *{roles}">
-                                    <input type="text" th:field="*{roles[__${stat.index}__].role}" />                            
-                                    <!-- <button type="button" name="deleteRole" th:value="${stat.index}">Remove item</button> -->
-                                </fieldset>
-                                <button type="button" name="addRole">Add new role</button>
-                            </p>
-                            <p>
-                                <input name="submitUserBtn" type="submit" id="btn-submit" value="Submit"/>
-                                <input type="reset" id="btn-reset" value="Reset"/>
-                            </p>
-                        </form>
-                    </tr>
-                </table>
+                <span class="close"></span>
+                <h4>Specify details of the new user</h4>
+                <form class="container-fluid" id="submitForm" th:action="@{/users/add}" th:object="${user}" method="post">
+                    <input type="text" class="short" placeholder="Id" th:field="*{id}"  />
+                    <input type="text" class="short" placeholder="Username" th:field="*{username}"/>
+                    <input type="text" class="short" placeholder="Name" th:field="*{name}"/>
+                    <input type="text" class="long" placeholder="Surname" th:field="*{surname}"/>
+                    <input type="text" class="long" placeholder="E-Mail" th:field="*{email}"/>
+                    <input type="text" class="long" placeholder="Password" th:field="*{password}"/>
+                    <p>Roles :</p>
+                    <fieldset id="roles" th:each="role, stat : *{roles}">
+                        <input type="text" th:field="*{roles[__${stat.index}__].role}" />                            
+                        <!-- <button type="button" name="deleteRole" th:value="${stat.index}">Remove item</button> -->
+                    </fieldset>
+                    <button id="btn-addRole" type="button" name="addRole">Add new role</button>
+                    <div>
+                        <input name="submitUserBtn" type="submit" id="btn-submit" value="Submit"/>
+                        <input type="reset" id="btn-reset" value="Reset"/>
+                    </div>
+                </form>
             </div>
 
         </div>
@@ -143,7 +130,6 @@
 </script>
 
 <script>
-
     $( document ).ajaxComplete(function( event, xhr, settings ) {
         if ( settings.url === "/users/add" ) {
             window.location.replace("/users");
@@ -155,6 +141,7 @@
             let rolesFieldset = document.getElementById('roles');
             let dataOfRoles = $('#roles').serializeArray();
             let inputCount = $('#roles input').length;
+            
             let input = document.createElement('input');
             
             input.type = 'text';
@@ -162,44 +149,44 @@
             input.setAttribute('name', name='roles[' + inputCount + '].role');
             input.setAttribute('value', name='USER');
 
+            // for newly created users there is no role associated with them
+            // this part adds a textbox to aid adding roles to the new user setting
+            if(inputCount == 0) {
+                rolesFieldset = document.createElement('fieldset');
+                rolesFieldset.id='roles';
+                document.getElementById('submitForm').insertBefore(rolesFieldset, document.getElementById('btn-addRole'));
+            }
             rolesFieldset.appendChild(input);
         }
     );
 </script>
 
 <script>
+    $('input[name="submitUserBtn"]').click(function (event) {
+        event.preventDefault();
 
-$('input[name="submitUserBtn"]').click(function (event) {
-    event.preventDefault();
+        var userData = $('#submitForm').serializeArray();
 
-    var userData = $('#submitForm').serializeArray();
+        userDataObj = {};
+        $(userData).each(
+            function(i, field) {
+                userDataObj[field.name] = field.value;
+            }
+        );
 
-    userDataObj = {};
-    $(userData).each(
-        function(i, field) {
-            userDataObj[field.name] = field.value;
-        }
-    );
+        var roleData = $('#roles').serializeArray();
 
-    var roleData = $('#roles').serializeArray();
+        roleDataObj = [];
+        let roleIdx = 0;
+        $(roleData).each(function(i, field){
+            userDataObj['roles[' + roleIdx + '].role'] = field.value;
+            roleDataObj.push(field.value);
+            roleIdx++;
+        });
 
-    roleDataObj = [];
-    let roleIdx = 0;
-    $(roleData).each(function(i, field){        
-        userDataObj['roles[' + roleIdx + '].role'] = field.value;
-        roleDataObj.push(field.value);
-        roleIdx++;
+        $.post('/users/add', $.param(userDataObj));
     });
 
-    $.post('/users/add', $.param(userDataObj));
-});
-
-</script>
-
-<script>
-function editOrSaveHandler(userId) {
-
-}
 </script>
 
 <script>

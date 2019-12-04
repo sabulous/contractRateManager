@@ -12,12 +12,14 @@ import com.sabulous.contractRateManager.model.Contract;
 import com.sabulous.contractRateManager.model.Role;
 import com.sabulous.contractRateManager.model.User;
 import com.sabulous.contractRateManager.repositories.ContractRepository;
+import com.sabulous.contractRateManager.repositories.RoleRepository;
 import com.sabulous.contractRateManager.services.RoleService;
 import com.sabulous.contractRateManager.services.UserService;
 
 @Component
 public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private ContractRepository contractRepository;
+    private RoleRepository roleRepository;
     private UserService userService;
     private RoleService roleService;
 
@@ -26,6 +28,10 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
         this.contractRepository = contractRepository;
     }
 
+    @Autowired
+    public void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -39,8 +45,9 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        loadRoles();
-        loadUsers(); 
+        // commented lines must be removed for bootstrap new data
+        // loadRoles();
+        // loadUsers();
     }
 
     // loadContracts can be used to bootstrap initial contract records
@@ -59,6 +66,7 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
         contract.setWeightBreak("Q100");
         contract.setValue("1.4");
         contract.setCreatedBy(1); // TODO db user id management
+        contract.setPrimaryRole("EU1");
         contractRepository.save(contract);
 
         list.add(contract);
@@ -75,6 +83,7 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
         contract2.setWeightBreak("Q1000");
         contract2.setValue("0.9");
         contract2.setCreatedBy(2);
+        contract2.setPrimaryRole("EU2");
         contractRepository.save(contract2);
 
         list.add(contract2);
@@ -91,6 +100,7 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
         contract3.setWeightBreak("Q300");
         contract3.setValue("3.25");
         contract3.setCreatedBy(7);
+        contract3.setPrimaryRole("EU1");
         contractRepository.save(contract3);
 
         list.add(contract3);
@@ -105,6 +115,7 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
         user1.setEmail("userEmail");
         user1.setUsername("user");
         user1.setPassword("userPw");
+        user1.addRole(roleRepository.findByRole("USER"));
 
         userService.saveOrUpdate(user1);
         
@@ -114,17 +125,56 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
         user2.setEmail("adminEmail");
         user2.setUsername("admin");
         user2.setPassword("adminPw");
-        user2.addRole(new Role("ADMIN"));
+        user2.addRole(roleRepository.findByRole("ADMIN"));
 
         userService.saveOrUpdate(user2);
+
+        User userEU1 = new User();
+        userEU1.setName("EU1Name");
+        userEU1.setSurname("EU1Surname");
+        userEU1.setEmail("EU1Email");
+        userEU1.setUsername("EU1Username");
+        userEU1.setPassword("EU1Password");
+        userEU1.addRole(roleRepository.findByRole("EU1"));
+
+        userService.saveOrUpdate(userEU1);
+
+        User userEU2 = new User();
+        userEU2.setName("EU2Name");
+        userEU2.setSurname("EU2Surname");
+        userEU2.setEmail("EU2Email");
+        userEU2.setUsername("EU2Username");
+        userEU2.setPassword("EU2Password");
+        userEU2.addRole(roleRepository.findByRole("EU2"));
+
+        userService.saveOrUpdate(userEU2);
+
+        User userEU1Backup = new User();
+        userEU1Backup.setName("EU1BackupName");
+        userEU1Backup.setSurname("EU1BackupSurname");
+        userEU1Backup.setEmail("EU1BackupEmail");
+        userEU1Backup.setUsername("EU1BackupUsername");
+        userEU1Backup.setPassword("EU1BackupPassword");
+        userEU1Backup.addRole(roleRepository.findByRole("EU1"));
+        userService.saveOrUpdate(userEU1Backup);
     }
     private void loadRoles() {
         Role role = new Role();
         role.setRole("USER");
         roleService.saveOrUpdate(role);
+
         Role adminRole = new Role();
         adminRole.setRole("ADMIN");
         roleService.saveOrUpdate(adminRole);
+
+        Role eu1Role = new Role();
+        eu1Role.setRole("EU1");
+        roleService.saveOrUpdate(eu1Role);
+
+        Role eu2Role = new Role();
+        eu2Role.setRole("EU2");
+        roleService.saveOrUpdate(eu2Role);
+
     }
     
 }

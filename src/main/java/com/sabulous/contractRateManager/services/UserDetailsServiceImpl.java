@@ -1,5 +1,6 @@
 package com.sabulous.contractRateManager.services;
 
+import com.sabulous.contractRateManager.model.Role;
 import com.sabulous.contractRateManager.model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,28 @@ public class UserDetailsServiceImpl implements IUserDetailsService {
     }
 
     public Integer getLoggedInUserId() {
+        return getLoggedInUser().getId();
+    }
+
+    public User getLoggedInUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         String username = ((UserDetails)principal).getUsername();
 
         User loggedIn = userService.findByUsername(username);
         
-        return loggedIn.getId();
+        return loggedIn;
+    }
+
+    public String getPrimaryRoleOfLoggedInUser() {
+        User loggedIn = getLoggedInUser();
+        String primaryRole = "N/A";
+        for(Role role : loggedIn.getRoles()) {
+            if(role.getRole().equals("ADMIN")) {
+                return "ADMIN";
+            }
+            primaryRole = role.getRole();
+        }
+        return primaryRole;
     }
 }

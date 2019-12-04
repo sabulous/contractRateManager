@@ -8,6 +8,7 @@ import com.sabulous.contractRateManager.model.Contract;
 import com.sabulous.contractRateManager.model.Role;
 import com.sabulous.contractRateManager.model.User;
 import com.sabulous.contractRateManager.repositories.ContractRepository;
+import com.sabulous.contractRateManager.repositories.RoleRepository;
 import com.sabulous.contractRateManager.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class ContractServiceImpl implements ContractService {
 
+    private RoleRepository roleRepository;
+
     private ContractRepository contractRepository;
 
     private UserRepository userRepository;
 
+    @Autowired
+    public void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
+    
     @Autowired
     public void setContractRepository(ContractRepository contractRepository) {
         this.contractRepository = contractRepository;
@@ -35,6 +43,15 @@ public class ContractServiceImpl implements ContractService {
         List<Contract> contracts = new ArrayList<>();
         contractRepository.findAll().forEach(contracts::add);
         return contracts;
+    }
+
+    @Override
+    public List<Contract> listContractsByRole(String roleName) {
+        Role role = roleRepository.findByRole(roleName);    
+
+        List<Contract> contractList = (List<Contract>)contractRepository.findAll();
+
+        return contractList.stream().filter(c -> c.getPrimaryRole().equals(roleName)).collect(Collectors.toList());
     }
 
     @Override

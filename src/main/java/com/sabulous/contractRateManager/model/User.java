@@ -21,7 +21,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class User implements UserDetails {
 
     public User() {
-        this.addRole(new Role("USER"));
     }
 
     @Id
@@ -41,7 +40,7 @@ public class User implements UserDetails {
 
     private String encryptedPassword;
 
-    @ManyToMany(cascade={CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade={CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable
     private List<Role> roles = new ArrayList<>();
 

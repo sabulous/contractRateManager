@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/", "/hello", "/h2-console/**").permitAll()
+        http.authorizeRequests().antMatchers("/", "/home", "/h2-console/**").permitAll()
                 // DO NOT allow anything else
                 // any request besides above line (ones in the antMatchers) require
                 // authentication
